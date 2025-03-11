@@ -138,6 +138,58 @@ npm install
 npm run dev
 ```
 
+# 🐳 Dokumentasi Dockerfile
+Docker digunakan untuk mengemas aplikasi agar dapat berjalan di berbagai lingkungan dengan konsistensi tinggi. Berikut adalah langkah-langkah untuk menggunakan Docker dalam proyek ini.
+
+### 📌 Dockerfile
+
+```dockerfile
+# Menggunakan base image Python
+FROM python:3.9
+
+# Menetapkan working directory dalam container
+WORKDIR /app
+
+# Menyalin file requirement.txt ke dalam container
+COPY requirements.txt ./
+
+# Menginstal dependensi
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Menyalin semua file dari proyek ke dalam container
+COPY . .
+
+# Mengekspos port yang digunakan oleh aplikasi
+EXPOSE 5000
+
+# Menjalankan aplikasi Flask
+CMD ["python", "app.py"]
+```
+
+### 📌 Cara menggunakan Docker
+#### 1. Membangun image Docker
+
+```bash
+docker build -t flask_app .
+```
+#### 2.  Menjalankan container Docker
+
+```bash
+docker run -p 5000:5000 flask_app
+```
+
+#### 3. Memeriksa status container Docker
+
+```bash
+docker ps
+```
+
+## 4. Menghentikan container Docker
+
+```bash
+docker stop flask_app
+```
+
 # ✅ Kesimpulan
 1. Backend Flask digunakan untuk menyediakan API CRUD dengan database PostgreSQL.
 2. Frontend React digunakan untuk menampilkan data dari API.
