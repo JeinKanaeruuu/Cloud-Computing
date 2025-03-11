@@ -17,7 +17,7 @@ CORS(app)
 
 @app.route('/')
 def home():
-    return jsonify({"message": "Hello from Flask and Jein"})
+    return jsonify({"message": "Hello from Flask Docker and Jein"})
 
 # GET: Ambil semua item
 @app.route('/api/items', methods=['GET'])
