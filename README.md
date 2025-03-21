@@ -142,7 +142,9 @@ npm run dev
 Docker digunakan untuk mengemas aplikasi agar dapat berjalan di berbagai lingkungan dengan konsistensi tinggi. Berikut adalah langkah-langkah untuk menggunakan Docker dalam proyek ini.
 
 ### 📌 Dockerfile
+Docker digunakan untuk mengemas aplikasi agar dapat berjalan di berbagai lingkungan dengan konsistensi tinggi. Berikut adalah langkah-langkah untuk menggunakan Docker dalam proyek ini.
 
+📌 Dockerfile Backend (Flask)
 ```dockerfile
 # Menggunakan base image Python
 FROM python:3.9
@@ -166,16 +168,52 @@ EXPOSE 5000
 CMD ["python", "app.py"]
 ```
 
+📌 Dockerfile Frontend (React + Vite)
+```dockerfile
+# frontend/my-react-app/Dockerfile
+FROM node:16-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+# Build untuk production menggunakan Vite
+RUN npm run build
+
+# Gunakan Nginx untuk serve static file
+FROM nginx:stable-alpine
+COPY --from=0 /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
 ### 📌 Cara menggunakan Docker
 #### 1. Membangun image Docker
 
+Fask
 ```bash
 docker build -t flask_app .
 ```
+
+React
+```bash
+docker build -t react-frontend-vite:1.0 .
+```
 #### 2.  Menjalankan container Docker
+
+Flask 
 
 ```bash
 docker run -p 5000:5000 flask_app
+```
+
+React
+```bash
+docker run -d -p 3000:80 --name react-container-vite react-frontend-vite:1.0
 ```
 
 #### 3. Memeriksa status container Docker
@@ -187,11 +225,13 @@ docker ps
 ## 4. Menghentikan container Docker
 
 ```bash
-docker stop flask_app
+docker stop flask_app react-container-vite
 ```
+
 
 # ✅ Kesimpulan
 1. Backend Flask digunakan untuk menyediakan API CRUD dengan database PostgreSQL.
 2. Frontend React digunakan untuk menampilkan data dari API.
 3. CORS sudah diaktifkan agar React bisa berkomunikasi dengan Flask.
 4. API bisa diuji dengan Postman atau REST Client untuk memastikan fungsionalitas berjalan dengan baik.
+5. Docker digunakan untuk memastikan aplikasi berjalan dalam lingkungan yang terisolasi.
