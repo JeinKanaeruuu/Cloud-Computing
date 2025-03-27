@@ -222,10 +222,74 @@ docker run -d -p 3000:80 --name react-container-vite react-frontend-vite:1.0
 docker ps
 ```
 
-## 4. Menghentikan container Docker
+#### 4. Menghentikan container Docker
 
 ```bash
 docker stop flask_app react-container-vite
+```
+
+### 📌 Membuat Docker Compose + SQL 
+File docker-compose.yml digunakan untuk mengelola semua layanan aplikasi dalam satu perintah.
+```yaml
+version: '3.7'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: flask_container
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_NAME=cc
+      - DB_USER=Mikoto
+      - DB_PASSWORD=0
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: react_container
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:12-alpine
+    container_name: postgres_container
+    environment:
+      - POSTGRES_DB=cc
+      - POSTGRES_USER=Mikoto
+      - POSTGRES_PASSWORD=0
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  db_data:
+```
+
+dan jalankan
+
+```
+docker compose up -d --build
+```
+
+```sql
+CREATE TABLE IF NOT EXISTS items (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT
+);
+
+INSERT INTO items (name, description) VALUES
+('Test Item', 'This is a test description'),
+('Test Item 2', 'This is a test description 2');
 ```
 
 
